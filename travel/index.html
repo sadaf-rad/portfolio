@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sadaf's World Journey 🌍</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffd700;
+            display: block;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: white;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+
+        .map-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        #travel-map {
+            height: 600px;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .countries-grid {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            animation: fadeInUp 0.8s ease-out 0.8s backwards;
+        }
+
+        .country-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .country-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .country-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .city-list {
+            list-style: none;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .city-list li:before {
+            content: "✈️ ";
+            margin-right: 0.5rem;
+        }
+
+        .emoji {
+            font-size: 1.8rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .leaflet-popup-content-wrapper {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .leaflet-popup-content {
+            margin: 15px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .stats-container {
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1rem 1.5rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            #travel-map {
+                height: 400px;
+            }
+
+            .countries-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-button">← Back to Portfolio</a>
+    
+    <div class="hero-section">
+        <h1><span class="emoji">🌍</span> My World Journey <span class="emoji">✈️</span></h1>
+        <p class="subtitle">Exploring the world, one destination at a time</p>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <span class="stat-number" id="countries-count">0</span>
+                <span class="stat-label">Countries Visited</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="cities-count">0</span>
+                <span class="stat-label">Cities Explored</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="percentage">0%</span>
+                <span class="stat-label">of Earth Discovered</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="map-container">
+        <div id="travel-map"></div>
+    </div>
+
+    <div class="countries-grid" id="countries-grid"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const travelData = {
+            'Istanbul': {'Country': 'Turkey', 'Latitude': 41.0082, 'Longitude': 28.9784},
+            'Dubai': {'Country': 'UAE', 'Latitude': 25.276987, 'Longitude': 55.296249},
+            'Sharjah': {'Country': 'UAE', 'Latitude': 25.346255, 'Longitude': 55.420924},
+            'Beirut': {'Country': 'Lebanon', 'Latitude': 33.8888, 'Longitude': 35.4955},
+            'Damascus': {'Country': 'Syria', 'Latitude': 33.5138, 'Longitude': 36.2765},
+            'Leiden': {'Country': 'Netherlands', 'Latitude': 52.1601, 'Longitude': 4.4970},
+            'Den Haag': {'Country': 'Netherlands', 'Latitude': 52.0705, 'Longitude': 4.3007},
+            'Delft': {'Country': 'Netherlands', 'Latitude': 52.0116, 'Longitude': 4.3571},
+            'Utrecht': {'Country': 'Netherlands', 'Latitude': 52.0907, 'Longitude': 5.1214},
+            'Maastricht': {'Country': 'Netherlands', 'Latitude': 50.8514, 'Longitude': 5.6900},
+            'Amsterdam': {'Country': 'Netherlands', 'Latitude': 52.3676, 'Longitude': 4.9041},
+            'Rotterdam': {'Country': 'Netherlands', 'Latitude': 51.9225, 'Longitude': 4.47917},
+            'Valkenburg': {'Country': 'Netherlands', 'Latitude': 50.8686, 'Longitude': 5.8233},
+            'Gouda': {'Country': 'Netherlands', 'Latitude': 52.0115, 'Longitude': 4.7105},
+            'London': {'Country': 'UK', 'Latitude': 51.5074, 'Longitude': -0.1278},
+            'Nottingham': {'Country': 'UK', 'Latitude': 52.9548, 'Longitude': -1.1581},
+            'Manchester': {'Country': 'UK', 'Latitude': 53.4808, 'Longitude': -2.2426},
+            'Rasht': {'Country': 'Iran', 'Latitude': 37.2824, 'Longitude': 49.5894},
+            'Mazandaran': {'Country': 'Iran', 'Latitude': 36.6349, 'Longitude': 53.0658},
+            'Astara': {'Country': 'Iran', 'Latitude': 38.4240, 'Longitude': 48.8470},
+            'Karaj': {'Country': 'Iran', 'Latitude': 35.8324, 'Longitude': 50.9919},
+            'Tehran': {'Country': 'Iran', 'Latitude': 35.6892, 'Longitude': 51.3890},
+            'Mashhad': {'Country': 'Iran', 'Latitude': 36.2605, 'Longitude': 59.6168},
+            'Yazd': {'Country': 'Iran', 'Latitude': 31.8974, 'Longitude': 54.3646},
+            'Shiraz': {'Country': 'Iran', 'Latitude': 29.5917, 'Longitude': 52.5833},
+            'Isfahan': {'Country': 'Iran', 'Latitude': 32.0590, 'Longitude': 51.6772},
+            'Qazvin': {'Country': 'Iran', 'Latitude': 36.2833, 'Longitude': 50.0042},
+            'Fardis': {'Country': 'Iran', 'Latitude': 35.7826, 'Longitude': 50.9715},
+            'Shahriar': {'Country': 'Iran', 'Latitude': 35.6636, 'Longitude': 51.1855},
+            'Qeshm': {'Country': 'Iran', 'Latitude': 26.9983, 'Longitude': 56.2705},
+            'Bandar Abbas': {'Country': 'Iran', 'Latitude': 27.1938, 'Longitude': 56.2677},
+            'Brussels': {'Country': 'Belgium', 'Latitude': 50.8503, 'Longitude': 4.3517},
+            'Antwerp': {'Country': 'Belgium', 'Latitude': 51.2194, 'Longitude': 4.4025},
+            'Lier': {'Country': 'Belgium', 'Latitude': 51.1310, 'Longitude': 4.5700},
+            'Ghent': {'Country': 'Belgium', 'Latitude': 51.0543, 'Longitude': 3.7174},
+            'Padua': {'Country': 'Italy', 'Latitude': 45.4064, 'Longitude': 11.8768},
+            'Venice': {'Country': 'Italy', 'Latitude': 45.4408, 'Longitude': 12.3155},
+            'Milan': {'Country': 'Italy', 'Latitude': 45.4642, 'Longitude': 9.1900},
+            'Verona': {'Country': 'Italy', 'Latitude': 45.4384, 'Longitude': 10.9916},
+            'Boroujerd': {'Country': 'Iran', 'Latitude': 33.8949, 'Longitude': 48.6900},
+            'Hamedan': {'Country': 'Iran', 'Latitude': 34.7942, 'Longitude': 48.5154},
+            'Qom': {'Country': 'Iran', 'Latitude': 34.6395, 'Longitude': 50.8760},
+            'Natanz': {'Country': 'Iran', 'Latitude': 33.4021, 'Longitude': 51.8269},
+            'Abianeh': {'Country': 'Iran', 'Latitude': 33.3093, 'Longitude': 51.7348},
+            'Paris': {'Country': 'France', 'Latitude': 48.8566, 'Longitude': 2.3522},
+            'Nice': {'Country': 'France', 'Latitude': 43.7102, 'Longitude': 7.2620},
+            'Monaco': {'Country': 'Monaco', 'Latitude': 43.7384, 'Longitude': 7.4246},
+            'Krakow': {'Country': 'Poland', 'Latitude': 50.0647, 'Longitude': 19.9450},
+            'Essen': {'Country': 'Germany', 'Latitude': 51.4556, 'Longitude': 7.0116},
+            'Neuss': {'Country': 'Germany', 'Latitude': 51.2020, 'Longitude': 6.6873},
+            'Düsseldorf': {'Country': 'Germany', 'Latitude': 51.2217, 'Longitude': 6.7762},
+            'Köln': {'Country': 'Germany', 'Latitude': 50.9375, 'Longitude': 6.9603}
+        };
+
+        // Calculate statistics
+        const cities = Object.keys(travelData);
+        const countries = [...new Set(Object.values(travelData).map(d => d.Country))];
+        
+        // Calculate area percentage
+        const latitudes = Object.values(travelData).map(d => d.Latitude);
+        const longitudes = Object.values(travelData).map(d => d.Longitude);
+        const minLat = Math.min(...latitudes);
+        const maxLat = Math.max(...latitudes);
+        const minLon = Math.min(...longitudes);
+        const maxLon = Math.max(...longitudes);
+        
+        const height = maxLat - minLat;
+        const meanLat = (minLat + maxLat) / 2 * Math.PI / 180;
+        const width = maxLon - minLon;
+        const adjustedWidth = width * Math.cos(meanLat);
+        const visitedArea = height * adjustedWidth * (40008 / 360) * (40008 / 360);
+        const percentage = (visitedArea / 510100000 * 100).toFixed(2);
+
+        // Animate counters
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    clearInterval(timer);
+                    current = target;
+                }
+                element.textContent = Math.floor(current);
+            }, 30);
+        }
+
+        animateCounter(document.getElementById('countries-count'), countries.length);
+        animateCounter(document.getElementById('cities-count'), cities.length);
+        
+        // Animate percentage
+        let currentPercentage = 0;
+        const percentageElement = document.getElementById('percentage');
+        const percentageTimer = setInterval(() => {
+            currentPercentage += percentage / 50;
+            if (currentPercentage >= percentage) {
+                clearInterval(percentageTimer);
+                currentPercentage = percentage;
+            }
+            percentageElement.textContent = currentPercentage.toFixed(2) + '%';
+        }, 30);
+
+        // Initialize map
+        const map = L.map('travel-map').setView([40, 15], 3);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Country flag emojis
+        const countryFlags = {
+            'Turkey': '🇹🇷',
+            'UAE': '🇦🇪',
+            'Lebanon': '🇱🇧',
+            'Syria': '🇸🇾',
+            'Netherlands': '🇳🇱',
+            'UK': '🇬🇧',
+            'Iran': '🇮🇷',
+            'Belgium': '🇧🇪',
+            'Italy': '🇮🇹',
+            'France': '🇫🇷',
+            'Monaco': '🇲🇨',
+            'Poland': '🇵🇱',
+            'Germany': '🇩🇪'
+        };
+
+        // Add markers
+        Object.entries(travelData).forEach(([city, data]) => {
+            const marker = L.circleMarker([data.Latitude, data.Longitude], {
+                radius: 8,
+                fillColor: '#ffd700',
+                color: '#fff',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map);
+
+            marker.bindPopup(`
+                <div style="text-align: center; font-family: 'Poppins', sans-serif;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">${countryFlags[data.Country] || '🌍'}</div>
+                    <div style="font-weight: 600; font-size: 1.1rem; color: #667eea;">${city}</div>
+                    <div style="color: #666; font-size: 0.9rem;">${data.Country}</div>
+                </div>
+            `);
+        });
+
+        // Create countries grid
+        const countriesGrid = document.getElementById('countries-grid');
+        const citiesByCountry = {};
+        
+        Object.entries(travelData).forEach(([city, data]) => {
+            if (!citiesByCountry[data.Country]) {
+                citiesByCountry[data.Country] = [];
+            }
+            citiesByCountry[data.Country].push(city);
+        });
+
+        Object.entries(citiesByCountry).forEach(([country, cities]) => {
+            const card = document.createElement('div');
+            card.className = 'country-card';
+            card.innerHTML = `
+                <div class="country-name">
+                    <span>${countryFlags[country] || '🌍'}</span>
+                    <span>${country}</span>
+                </div>
+                <ul class="city-list">
+                    ${cities.map(city => `<li>${city}</li>`).join('')}
+                </ul>
+            `;
+            countriesGrid.appendChild(card);
+        });
+    </script>
+</body>
+</html>
