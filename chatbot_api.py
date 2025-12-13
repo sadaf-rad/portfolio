@@ -89,4 +89,6 @@ def health():
 if __name__ == '__main__':
     print("Starting chatbot API server...")
     print("Make sure OPENROUTER_API_KEY is set in your environment")
-    app.run(debug=True, port=5002)
+    port = int(os.environ.get('PORT', 5002))
+    app.run(host='0.0.0.0', port=port, debug=False)
+

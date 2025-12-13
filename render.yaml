@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: portfolio-chatbot
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python chatbot_api.py
+    envVars:
+      - key: OPENROUTER_API_KEY
+        sync: false
