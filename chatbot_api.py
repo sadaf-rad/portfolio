@@ -19,10 +19,10 @@ except FileNotFoundError:
     resume_text = "Resume file not found."
 
 # Get OpenRouter API key
-api_key = os.environ.get('OPENROUTER_API_KEY', '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')
+api_key = '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'
 
 if not api_key:
-    print("Warning: OPENROUTER_API_KEY not found in environment variables")
+    print("Warning: API key not configured")
 
 # Initialize OpenAI client with OpenRouter
 client = OpenAI(
