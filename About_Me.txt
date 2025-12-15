@@ -1,0 +1,33 @@
+Name: Sadaf Esmaeili Rad
+Education: MSc Computer Science (Track: Data Science), Leiden University
+Graduated recently 
+Master Thesis : Predicting user retention in sarafu network using network science methods and Machine learning , supervised by Dr Frank Takes and I got 8 . 
+
+I am from Iran , had 2 internships there , my bachelor was computer engineering . 
+Skills:
+  - Python, Pandas, NumPy
+  - SQL
+  - Power BI 
+  - Snowflake in learning process
+  - Azure in learning process
+  - Machine Learning
+  - Network science
+  - Git 
+  
+  Languages: native in persion 
+  used to speak spanish in level B1 now only remember basic stuff 
+  fluent in english
+  going to dutch class level A2 
+  I enjoy learning languages , knowing multiple languages gives you power .
+
+  I go to the gym .
+  I meditate .
+  I love travelling and exploring new places , trying new food . 
+  I respect all mindsets as far as it does not hurt anyone .
+  I believe in team work .
+  I am curious and kind.
+  moving to a new country or better to say a new continent and living alone for 2 years boosted my personality , improve my problem solving not just in coding but also in life challenges .
+  I have a younger sister .
+  I have many international friends .
+  I enjoy learning new things .
+  As an entry level , I hope to find the chance to proof my skills and use them and gain experience , I believe if someone believes in me I will not disspaoint them .

@@ -8,13 +8,18 @@ CORS(app)  # Enable CORS for frontend communication
 
 # Load resume content
 try:
-    with open("/Users/sadaf/Desktop/DataScience-RoadMap/cvchat/About_Me.txt", "r", encoding="utf-8") as f:
-        resume_text = f.read()
+    # Try local file first, then fallback to original location
+    try:
+        with open("About_Me.txt", "r", encoding="utf-8") as f:
+            resume_text = f.read()
+    except FileNotFoundError:
+        with open("/Users/sadaf/Desktop/DataScience-RoadMap/cvchat/About_Me.txt", "r", encoding="utf-8") as f:
+            resume_text = f.read()
 except FileNotFoundError:
     resume_text = "Resume file not found."
 
 # Get OpenRouter API key
-api_key = "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"
+api_key = os.environ.get('OPENROUTER_API_KEY', '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')
 
 if not api_key:
     print("Warning: OPENROUTER_API_KEY not found in environment variables")
