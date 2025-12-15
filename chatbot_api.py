@@ -19,7 +19,7 @@ except FileNotFoundError:
     resume_text = "Resume file not found."
 
 # Get OpenRouter API key
-api_key = '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'
+api_key = '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'
 
 if not api_key:
     print("Warning: API key not configured")
