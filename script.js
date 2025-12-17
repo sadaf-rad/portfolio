@@ -188,7 +188,46 @@ function initScrollAnimations() {
     });
 }
 
+// Animate stat counters
+function animateCounters() {
+    const counters = document.querySelectorAll('.stat-value');
+    const speed = 200; // Animation speed
+    
+    counters.forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        const increment = target / speed;
+        
+        function updateCount() {
+            const count = +counter.innerText;
+            
+            if (count < target) {
+                counter.innerText = Math.ceil(count + increment);
+                setTimeout(updateCount, 10);
+            } else {
+                counter.innerText = target;
+            }
+        }
+        
+        updateCount();
+    });
+}
+
 // Initialize animations
 document.addEventListener('DOMContentLoaded', () => {
     initScrollAnimations();
+    
+    // Trigger counter animation when about section is visible
+    const aboutSection = document.querySelector('#about');
+    if (aboutSection) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        observer.observe(aboutSection);
+    }
 });
