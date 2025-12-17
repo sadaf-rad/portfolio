@@ -196,6 +196,7 @@ function animateCounters() {
     counters.forEach(counter => {
         const target = +counter.getAttribute('data-target');
         const increment = target / speed;
+        let hasAnimated = false;
         
         function updateCount() {
             const count = +counter.innerText;
@@ -226,8 +227,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.5 });
+        }, { threshold: 0.2 });
         
         observer.observe(aboutSection);
     }
+    
+    // Also check if about section is already visible on load
+    setTimeout(() => {
+        const about = document.querySelector('#about');
+        if (about) {
+            const rect = about.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                animateCounters();
+            }
+        }
+    }, 100);
 });
