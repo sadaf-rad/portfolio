@@ -188,58 +188,7 @@ function initScrollAnimations() {
     });
 }
 
-// Animate stat counters
-function animateCounters() {
-    const counters = document.querySelectorAll('.stat-value');
-    const speed = 200; // Animation speed
-    
-    counters.forEach(counter => {
-        const target = +counter.getAttribute('data-target');
-        const increment = target / speed;
-        let hasAnimated = false;
-        
-        function updateCount() {
-            const count = +counter.innerText;
-            
-            if (count < target) {
-                counter.innerText = Math.ceil(count + increment);
-                setTimeout(updateCount, 10);
-            } else {
-                counter.innerText = target;
-            }
-        }
-        
-        updateCount();
-    });
-}
-
 // Initialize animations
 document.addEventListener('DOMContentLoaded', () => {
     initScrollAnimations();
-    
-    // Trigger counter animation when about section is visible
-    const aboutSection = document.querySelector('#about');
-    if (aboutSection) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounters();
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.2 });
-        
-        observer.observe(aboutSection);
-    }
-    
-    // Also check if about section is already visible on load
-    setTimeout(() => {
-        const about = document.querySelector('#about');
-        if (about) {
-            const rect = about.getBoundingClientRect();
-            if (rect.top < window.innerHeight && rect.bottom > 0) {
-                animateCounters();
-            }
-        }
-    }, 100);
 });
